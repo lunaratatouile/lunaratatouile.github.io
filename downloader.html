@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexaloffle Apps Downloader</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            margin: 20px;
+        }
+        select, button {
+            margin: 10px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            transition: 0.3s;
+        }
+        select {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        button {
+            background-color: #b00030;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #800020;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Lexaloffle Apps Downloader</h1>
+        <label for="app">Choose an app:</label>
+        <select id="app" onchange="updateOptions()">
+            <option value="pico8">Pico-8</option>
+            <option value="picotron">Picotron</option>
+            <option value="voxatron">Voxatron</option>
+            <option value="picocad">PicoCAD</option>
+        </select>
+        <br>
+        <div id="platform-container">
+            <label for="platform">Choose a platform:</label>
+            <select id="platform">
+                <option value="windows">Windows</option>
+                <option value="macos">macOS</option>
+                <option value="linux">Linux</option>
+                <option value="raspi">Raspberry Pi</option>
+            </select>
+        </div>
+        <br>
+        <div id="version-container">
+            <label for="version">Choose a version:</label>
+            <select id="version"></select>
+        </div>
+        <br>
+        <button onclick="download()">DOWNLOAD</button>
+    </div>
+    <script>
+        const links = {
+            picotron: {
+                "0.1.1d": {
+                    windows: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_windows.zip",
+                    macos: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_osx.zip",
+                    linux: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_amd64.zip",
+                    raspi: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_raspi.zip"
+                }
+            },
+            pico8: {
+                "0.2.6b": {
+                    windows: "https://www.lexaloffle.com/dl/7tian/pico-8_0.2.6b_windows.zip",
+                    macos: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_osx.zip",
+                    linux: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_amd64.zip",
+                    raspi: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_raspi.zip"
+                }
+            },
+            voxatron: {
+                "0.3.6": {
+                    windows: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_windows.zip",
+                    macos: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_osx.zip",
+                    linux: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_amd64.zip",
+                    raspi: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_osx.zip"
+                }
+            },
+            picocad: {
+                latest: {
+                    universal: "https://github.com/tekh-ops/picocad/archive/refs/heads/main.zip"
+                }
+            }
+        };
+        
+        function updateOptions() {
+            const app = document.getElementById("app").value;
+            const platformContainer = document.getElementById("platform-container");
+            const versionSelect = document.getElementById("version");
+            versionSelect.innerHTML = "";
+            
+            if (app === "picocad") {
+                platformContainer.style.display = "none";
+                versionSelect.innerHTML = '<option value="latest">Latest Version</option>';
+            } else {
+                platformContainer.style.display = "block";
+                Object.keys(links[app]).forEach(version => {
+                    let option = document.createElement("option");
+                    option.value = version;
+                    option.textContent = version;
+                    versionSelect.appendChild(option);
+                });
+            }
+        }
+        
+        function download() {
+            const app = document.getElementById("app").value;
+            const platform = document.getElementById("platform").value;
+            const version = document.getElementById("version").value;
+            let link = app === "picocad" ? links.picocad.latest.universal : links[app][version][platform];
+            if (link) window.open(link, '_blank');
+            else alert("Link not available for this configuration.");
+        }
+        
+        updateOptions();
+    </script>
+</body>
+</html>
