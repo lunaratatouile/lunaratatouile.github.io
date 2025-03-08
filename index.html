@@ -12,7 +12,7 @@
             text-align: center;
             margin: 20px;
         }
-        select, button {
+        select, button, input {
             margin: 10px;
             padding: 12px;
             font-size: 16px;
@@ -21,7 +21,7 @@
             outline: none;
             transition: 0.3s;
         }
-        select {
+        select, input {
             background-color: #1e1e1e;
             color: #ffffff;
             cursor: pointer;
@@ -54,7 +54,7 @@
     <div class="container">
         <h1>Lexaloffle Apps Downloader</h1>
         <label for="app">Choose an app:</label>
-        <select id="app" onchange="updateOptions()">
+        <select id="app" onchange="togglePlatform()">
             <option value="pico8">Pico-8</option>
             <option value="picotron">Picotron</option>
             <option value="voxatron">Voxatron</option>
@@ -72,75 +72,56 @@
         </div>
         <br>
         <div id="version-container">
-            <label for="version">Choose a version:</label>
-            <select id="version"></select>
+            <label for="version">Enter version:</label>
+            <input type="text" id="version" placeholder="e.g., 0.2.6b">
         </div>
         <br>
         <button onclick="download()">DOWNLOAD</button>
     </div>
     <script>
-        const links = {
-            picotron: {
-                "0.1.1d": {
-                    windows: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_windows.zip",
-                    macos: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_osx.zip",
-                    linux: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_amd64.zip",
-                    raspi: "https://www.lexaloffle.com/dl/8pwrtp/picotron_0.1.1d_raspi.zip"
-                }
-            },
-            pico8: {
-                "0.2.6b": {
-                    windows: "https://www.lexaloffle.com/dl/7tian/pico-8_0.2.6b_windows.zip",
-                    macos: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_osx.zip",
-                    linux: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_amd64.zip",
-                    raspi: "https://www.lexaloffle.com/dl/7tiann/pico-8_0.2.6b_raspi.zip"
-                }
-            },
-            voxatron: {
-                "0.3.6": {
-                    windows: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_windows.zip",
-                    macos: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_osx.zip",
-                    linux: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_amd64.zip",
-                    raspi: "https://www.lexaloffle.com/dl/5r8npa/voxatron_0.3.6_osx.zip"
-                }
-            },
-            picocad: {
-                latest: {
-                    universal: "https://github.com/tekh-ops/picocad/archive/refs/heads/main.zip"
-                }
-            }
+        const appData = {
+            pico8: { base: '7tiann', pattern: 'pico-8' },
+            picotron: { base: '8pwrtp', pattern: 'picotron' },
+            voxatron: { base: '5r8npa', pattern: 'voxatron' },
+            picocad: { github: 'tekh-ops/picocad' }
         };
-        
-        function updateOptions() {
-            const app = document.getElementById("app").value;
-            const platformContainer = document.getElementById("platform-container");
-            const versionSelect = document.getElementById("version");
-            versionSelect.innerHTML = "";
-            
-            if (app === "picocad") {
-                platformContainer.style.display = "none";
-                versionSelect.innerHTML = '<option value="latest">Latest Version</option>';
-            } else {
-                platformContainer.style.display = "block";
-                Object.keys(links[app]).forEach(version => {
-                    let option = document.createElement("option");
-                    option.value = version;
-                    option.textContent = version;
-                    versionSelect.appendChild(option);
-                });
-            }
+
+        function togglePlatform() {
+            const app = document.getElementById('app').value;
+            document.getElementById('platform-container').style.display = 
+                app === 'picocad' ? 'none' : 'block';
         }
-        
+
         function download() {
-            const app = document.getElementById("app").value;
-            const platform = document.getElementById("platform").value;
-            const version = document.getElementById("version").value;
-            let link = app === "picocad" ? links.picocad.latest.universal : links[app][version][platform];
-            if (link) window.open(link, '_blank');
-            else alert("Link not available for this configuration.");
+            const app = document.getElementById('app').value;
+            const platform = document.getElementById('platform').value;
+            const version = document.getElementById('version').value.trim();
+            
+            if (app === 'picocad') {
+                window.open(`https://github.com/${appData.picocad.github}/archive/main.zip`, '_blank');
+                return;
+            }
+
+            if (!version) {
+                alert('Please enter a version number');
+                return;
+            }
+
+            const platformMap = {
+                windows: 'windows',
+                macos: 'osx',
+                linux: 'amd64',
+                raspi: 'raspi'
+            };
+            
+            const baseUrl = `https://www.lexaloffle.com/dl/${appData[app].base}`;
+            const fileName = `${appData[app].pattern}_${version}_${platformMap[platform]}.zip`;
+            
+            window.open(`${baseUrl}/${fileName}`, '_blank');
         }
-        
-        updateOptions();
+
+        // Initialize platform visibility
+        togglePlatform();
     </script>
 </body>
 </html>
