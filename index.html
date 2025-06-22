@@ -64,7 +64,8 @@
         <div id="platform-container">
             <label for="platform">Choose a platform:</label>
             <select id="platform">
-                <option value="windows">Windows</option>
+                <option value="windowsp">Windows (ZIP)</option>
+                <option value="windowsi">Windows (INSTALLER)</option>
                 <option value="macos">macOS</option>
                 <option value="linux">Linux</option>
                 <option value="raspi">Raspberry Pi</option>
@@ -108,15 +109,20 @@
             }
 
             const platformMap = {
-                windows: 'windows',
+                windowsp: 'windows',
+                windowsi: 'setup',
                 macos: 'osx',
                 linux: 'amd64',
                 raspi: 'raspi'
             };
             
             const baseUrl = `https://www.lexaloffle.com/dl/${appData[app].base}`;
-            const fileName = `${appData[app].pattern}_${version}_${platformMap[platform]}.zip`;
-            
+            fileName = `${appData[app].pattern}_${version}_${platformMap[platform]}`;
+            if (platformMap[platform] == "setup"){
+                fileName = fileName.concat(".exe")
+            } else {
+                fileName = fileName.concat(".zip")
+            }
             window.open(`${baseUrl}/${fileName}`, '_blank');
         }
 
