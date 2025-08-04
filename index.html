@@ -5,100 +5,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lexaloffle Apps Downloader</title>
     <style>
+        :root {
+            --bg-color: #0a0a2a;
+            --text-color: #e0e0e0;
+            --accent-color: #6a0dad;
+            --container-bg: #1a1a3a;
+        }
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             text-align: center;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
+            position: relative;
         }
-        select, button, input {
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(106, 13, 173, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-in;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(106, 13, 173, 0.5);
+        }
+        .app-selection {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .app-card {
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 150px; /* Hauteur fixe pour uniformité */
+            justify-content: center;
+        }
+        .app-card h2 {
+            font-size: 14px; /* Taille de police réduite */
+            margin-top: 10px;
+            white-space: nowrap; /* Texte sur une seule ligne */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
+        }
+        .app-card i {
+            font-size: 24px; /* Taille d'icône cohérente */
+        }
+        .app-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+        .app-card.selected {
+            border: 2px solid var(--accent-color);
+            animation: bounce 0.5s;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        select, input {
             margin: 10px;
             padding: 12px;
             font-size: 16px;
             border-radius: 8px;
-            border: none;
+            border: 1px solid var(--accent-color);
+            background-color: var(--container-bg);
+            color: var(--text-color);
             outline: none;
             transition: 0.3s;
         }
-        select, input {
-            background-color: #1e1e1e;
-            color: #ffffff;
-            cursor: pointer;
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><path fill="%23e0e0e0" d="M0 0l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+        input:focus {
+            box-shadow: 0 0 5px var(--accent-color);
         }
         button {
-            background-color: #b00030;
-            color: white;
+            margin: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--accent-color);
+            color: var(--text-color);
             font-weight: bold;
             cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
         }
         button:hover {
-            background-color: #800020;
+            background-color: #4b0082;
+            transform: scale(1.05);
         }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
         }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
+        @media (max-width: 600px) {
+            .app-selection {
+                grid-template-columns: 1fr;
+            }
+            .app-card {
+                width: 100%;
+            }
+            .container {
+                width: 90%;
+            }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+    <div id="particles-js"></div>
     <div class="container">
         <h1>Lexaloffle Apps Downloader</h1>
-        <label for="app">Choose an app:</label>
-        <select id="app" onchange="togglePlatform()">
-            <option value="pico8">Pico-8</option>
-            <option value="picotron">Picotron</option>
-            <option value="voxatron">Voxatron</option>
-            <option value="picocad">PicoCAD</option>
-        </select>
-        <br>
-        <div id="platform-container">
-            <label for="platform">Choose a platform:</label>
-            <select id="platform">
-                <option value="windowsp">Windows (ZIP)</option>
-                <option value="windowsi">Windows (INSTALLER)</option>
-                <option value="macos">macOS</option>
-                <option value="linux">Linux</option>
-                <option value="raspi">Raspberry Pi</option>
-            </select>
+        <div class="app-selection">
+            <div class="app-card" data-app="pico8">
+                <i class="fas fa-gamepad"></i>
+                <h2>PICO-8</h2>
+            </div>
+            <div class="app-card" data-app="picotron">
+                <i class="fas fa-robot"></i>
+                <h2>PICOTRON</h2>
+            </div>
+            <div class="app-card" data-app="voxatron">
+                <i class="fas fa-cube"></i>
+                <h2>VOXATRON</h2>
+            </div>
+            <div class="app-card" data-app="picocad">
+                <i class="fas fa-drafting-compass"></i>
+                <h2>PICOCAD</h2>
+            </div>
         </div>
-        <br>
-        <div id="version-container">
+        <div id="platform-container" style="display: none;">
+            <label for="platform">Choose a platform:</label>
+            <select id="platform"></select>
+        </div>
+        <div id="version-container" style="display: none;">
             <label for="version">Enter version:</label>
             <input type="text" id="version" placeholder="e.g., 0.2.6b">
         </div>
-        <br>
-        <button onclick="download()">DOWNLOAD</button>
+        <button id="download-btn">DOWNLOAD</button>
     </div>
     <script>
         const appData = {
-            pico8: { base: '7tiann', pattern: 'pico-8' },
-            picotron: { base: '8pwrtp', pattern: 'picotron' },
-            voxatron: { base: '5r8npa', pattern: 'voxatron' },
-            picocad: { github: 'tekh-ops/picocad' }
+            pico8: { base: '7tiann', pattern: 'pico-8', platforms: ['windowsp', 'windowsi', 'macos', 'linux', 'raspi'] },
+            picotron: { base: '8pwrtp', pattern: 'picotron', platforms: ['windowsp', 'windowsi', 'macos', 'linux', 'raspi'] },
+            voxatron: { base: '5r8npa', pattern: 'voxatron', platforms: ['windowsp', 'macos', 'linux', 'raspi'] },
+            picocad: { github: 'tekh-ops/picocad', platforms: [] }
         };
 
+        const platformTexts = {
+            windowsp: 'Windows (ZIP)',
+            windowsi: 'Windows (INSTALLER)',
+            macos: 'macOS',
+            linux: 'Linux',
+            raspi: 'Raspberry Pi'
+        };
+
+        let selectedApp = null;
+
+        function selectApp(app) {
+            selectedApp = app;
+            document.querySelectorAll('.app-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`.app-card[data-app="${app}"]`).classList.add('selected');
+            togglePlatform();
+        }
+
         function togglePlatform() {
-            const app = document.getElementById('app').value;
-            document.getElementById('platform-container').style.display = 
-                app === 'picocad' ? 'none' : 'block';
+            const platformContainer = document.getElementById('platform-container');
+            const versionContainer = document.getElementById('version-container');
+            const platformSelect = document.getElementById('platform');
+
+            platformSelect.innerHTML = '';
+
+            if (selectedApp === 'picocad') {
+                platformContainer.style.display = 'none';
+                versionContainer.style.display = 'none';
+            } else {
+                platformContainer.style.display = 'block';
+                versionContainer.style.display = 'block';
+
+                const platforms = appData[selectedApp].platforms;
+                platforms.forEach(platform => {
+                    const option = document.createElement('option');
+                    option.value = platform;
+                    option.text = platformTexts[platform];
+                    platformSelect.appendChild(option);
+                });
+            }
         }
 
         function download() {
-            const app = document.getElementById('app').value;
             const platform = document.getElementById('platform').value;
             const version = document.getElementById('version').value.trim();
-            
-            if (app === 'picocad') {
+
+            if (selectedApp === 'picocad') {
                 window.open(`https://github.com/${appData.picocad.github}/archive/main.zip`, '_blank');
                 return;
             }
@@ -115,19 +246,36 @@
                 linux: 'amd64',
                 raspi: 'raspi'
             };
-            
-            const baseUrl = `https://www.lexaloffle.com/dl/${appData[app].base}`;
-            fileName = `${appData[app].pattern}_${version}_${platformMap[platform]}`;
-            if (platformMap[platform] == "setup"){
-                fileName = fileName.concat(".exe")
+
+            const baseUrl = `https://www.lexaloffle.com/dl/${appData[selectedApp].base}`;
+            let fileName = `${appData[selectedApp].pattern}_${version}_${platformMap[platform]}`;
+            if (platformMap[platform] === "setup") {
+                fileName = fileName.concat(".exe");
             } else {
-                fileName = fileName.concat(".zip")
+                fileName = fileName.concat(".zip");
             }
             window.open(`${baseUrl}/${fileName}`, '_blank');
         }
 
-        // Initialize platform visibility
-        togglePlatform();
+        // Event listeners
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.addEventListener('click', () => selectApp(card.getAttribute('data-app')));
+        });
+
+        document.getElementById('download-btn').addEventListener('click', download);
+
+        // Initialize particles
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#6a0dad' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: { enable: true, speed: 2 }
+            }
+        });
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </body>
 </html>
