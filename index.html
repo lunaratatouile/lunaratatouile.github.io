@@ -247,7 +247,12 @@
                 raspi: 'raspi'
             };
 
-            const baseUrl = `https://www.lexaloffle.com/dl/${appData[selectedApp].base}`;
+            let base = appData[selectedApp].base;
+            if (selectedApp === 'pico8') {
+                base = (version === '0.2.7') ? '7wdekp' : '7tiann';
+            }
+
+            const baseUrl = `https://www.lexaloffle.com/dl/${base}`;
             let fileName = `${appData[selectedApp].pattern}_${version}_${platformMap[platform]}`;
             if (platformMap[platform] === "setup") {
                 fileName = fileName.concat(".exe");
