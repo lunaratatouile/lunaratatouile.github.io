@@ -143,37 +143,9 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
+    <h1>!! this doesn't work anymore !!</h1>
+    <h2>but you can still buy pico 8 on the official website</h2>
     <div id="particles-js"></div>
-    <div class="container">
-        <h1>Lexaloffle Apps Downloader</h1>
-        <div class="app-selection">
-            <div class="app-card" data-app="pico8">
-                <i class="fas fa-gamepad"></i>
-                <h2>PICO-8</h2>
-            </div>
-            <div class="app-card" data-app="picotron">
-                <i class="fas fa-robot"></i>
-                <h2>PICOTRON</h2>
-            </div>
-            <div class="app-card" data-app="voxatron">
-                <i class="fas fa-cube"></i>
-                <h2>VOXATRON</h2>
-            </div>
-            <div class="app-card" data-app="picocad">
-                <i class="fas fa-drafting-compass"></i>
-                <h2>PICOCAD</h2>
-            </div>
-        </div>
-        <div id="platform-container" style="display: none;">
-            <label for="platform">Choose a platform:</label>
-            <select id="platform"></select>
-        </div>
-        <div id="version-container" style="display: none;">
-            <label for="version">Enter version:</label>
-            <input type="text" id="version" placeholder="e.g., 0.2.7">
-        </div>
-        <button id="download-btn">DOWNLOAD</button>
-    </div>
     <script>
         const appData = {
             pico8: { base: '7wdekp', pattern: 'pico-8', platforms: ['windowsp', 'windowsi', 'macos', 'linux', 'raspi'] },
